@@ -8,8 +8,17 @@ class CreateTransactionService {
     this.transactionsRepository = transactionsRepository;
   }
 
-  public execute(): Transaction {
-    // TODO
+  public execute(transaction: Transaction): Transaction {
+    
+    if(!['income', 'outcome'].includes(transaction.type)){
+      throw new Error('Invalid transaction type')
+    }
+
+    if(transaction.type === 'outcome' && transaction.value > this.transactionsRepository.getBalance().total){
+      throw new Error('Insufficent funds')
+    }
+
+    return this.transactionsRepository.create(transaction)
   }
 }
 
